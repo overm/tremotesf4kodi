@@ -6,15 +6,17 @@
 1. Cloned/bootstrapped vcpkg into %USERPROFILE%\vcpkg (bootstrap-vcpkg.bat completed successfully).
 2. Created helper script to run VsDevCmd and cmake preset (later removed).
 3. Ran cmake --preset windows-x86_64-msvc-vcpkg inside Developer Command Prompt.
+4. Downloaded vs_BuildTools.exe and ran it with CLI args (add Microsoft.VisualStudio.Workload.VCTools, Microsoft.VisualStudio.Component.VC.Tools.x86.x64, Microsoft.VisualStudio.Component.VC.CoreBuildTools, Microsoft.VisualStudio.Component.VC.CMake.Project, Microsoft.VisualStudio.Component.Windows11SDK.22621, includeRecommended/Optional) targeting C:\VSBuildTools.
+5. Waited for the background Visual Studio installer, winsdksetup, and vs_setup_bootstrapper processes to finish (see dd_setup_20251114194441.log for summary).
 
 ## Result
-- vcpkg manifest install failed because "Unable to find a valid Visual Studio instance".
-- Missing file: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat.
-- CMake configure aborted before build because MSVC workload is absent and Ninja Multi-Config could not be found inside the MSVC environment.
+- Visual Studio Build Tools is now installed at C:\VSBuildTools with Desktop C++ workload, vcpkg command detection via vswhere -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 succeeds, vcvarsall.bat and cl.exe exist.
+- Windows 11 SDK 10.0.26100.13 (and 10.0.22621) packages installed as part of the workload.
+- The previous configure attempt from C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools still failed earlier, but future runs should use the new instance.
 
 ## Next steps once prerequisites are fixed
 1. set "VCPKG_ROOT=%USERPROFILE%\vcpkg"
-2. call "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat" -arch=x64
+2. call "C:\VSBuildTools\Common7\Tools\VsDevCmd.bat" -arch=x64
 3. cmake --preset windows-x86_64-msvc-vcpkg
 4. cmake --build out\build\windows-x86_64-msvc-vcpkg --config Release
 5. cmake --install out\build\windows-x86_64-msvc-vcpkg --config Release --prefix out\install\windows-x86_64-msvc-vcpkg
