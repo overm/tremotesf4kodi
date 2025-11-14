@@ -1,0 +1,4 @@
+1. Install Visual Studio Build Tools workload "Desktop development with C++" (component Microsoft.VisualStudio.Component.VC.Tools.x86.x64) and Windows 11 SDK so that C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat exists.
+2. Set VCPKG_ROOT to C:\Users\ombes\vcpkg (already cloned and bootstrapped).
+3. Ensure Ninja is available (ninja --version already returns 1.13.1).
+4. Use Developer Command Prompt (VsDevCmd.bat -arch=x64) to get MSVC/clang-cl in PATH before running CMake.

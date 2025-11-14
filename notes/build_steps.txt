@@ -1,0 +1,21 @@
+# Build log (14 Nov 2025)
+- Repository: Tremotesf
+- Goal: configure preset windows-x86_64-msvc-vcpkg and build/run Tremotesf.exe
+
+## Actions
+1. Cloned/bootstrapped vcpkg into %USERPROFILE%\vcpkg (bootstrap-vcpkg.bat completed successfully).
+2. Created helper script to run VsDevCmd and cmake preset (later removed).
+3. Ran cmake --preset windows-x86_64-msvc-vcpkg inside Developer Command Prompt.
+
+## Result
+- vcpkg manifest install failed because "Unable to find a valid Visual Studio instance".
+- Missing file: C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat.
+- CMake configure aborted before build because MSVC workload is absent and Ninja Multi-Config could not be found inside the MSVC environment.
+
+## Next steps once prerequisites are fixed
+1. set "VCPKG_ROOT=%USERPROFILE%\vcpkg"
+2. call "%ProgramFiles(x86)%\Microsoft Visual Studio\2022\BuildTools\Common7\Tools\VsDevCmd.bat" -arch=x64
+3. cmake --preset windows-x86_64-msvc-vcpkg
+4. cmake --build out\build\windows-x86_64-msvc-vcpkg --config Release
+5. cmake --install out\build\windows-x86_64-msvc-vcpkg --config Release --prefix out\install\windows-x86_64-msvc-vcpkg
+6. Run out\build\windows-x86_64-msvc-vcpkg\Release\Tremotesf.exe
