@@ -8,16 +8,21 @@
 3. Ran cmake --preset windows-x86_64-msvc-vcpkg inside Developer Command Prompt.
 4. Downloaded vs_BuildTools.exe and ran it with CLI args (add Microsoft.VisualStudio.Workload.VCTools, Microsoft.VisualStudio.Component.VC.Tools.x86.x64, Microsoft.VisualStudio.Component.VC.CoreBuildTools, Microsoft.VisualStudio.Component.VC.CMake.Project, Microsoft.VisualStudio.Component.Windows11SDK.22621, includeRecommended/Optional) targeting C:\VSBuildTools.
 5. Waited for the background Visual Studio installer, winsdksetup, and vs_setup_bootstrapper processes to finish (see dd_setup_20251114194441.log for summary).
+6. Created reusable launcher %USERPROFILE%\run_vsdev_env.cmd (VsDevCmd + VCPKG_ROOT + `cd` repo).
+7. Ran `cmake --preset windows-x86_64-msvc-vcpkg` (first invocation built/installed all Qt/KF6 dependencies via vcpkg ~2h, second run completed configure in ~20s).
+8. Ran `cmake --build out\build\windows-x86_64-msvc-vcpkg --config Release` which produced binaries under out\build\windows-x86_64-msvc-vcpkg\src\Release.
+9. Installed artifacts via `cmake --install out\build\windows-x86_64-msvc-vcpkg --config Release --prefix out\install\windows-x86_64-msvc-vcpkg`.
+10. Smoke-tested out\install\windows-x86_64-msvc-vcpkg\tremotesf.exe (started for ~5s, then closed; exit code -1 due to forced shutdown).
 
 ## Result
 - Visual Studio Build Tools is now installed at C:\VSBuildTools with Desktop C++ workload, vcpkg command detection via vswhere -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 succeeds, vcvarsall.bat and cl.exe exist.
 - Windows 11 SDK 10.0.26100.13 (and 10.0.22621) packages installed as part of the workload.
-- The previous configure attempt from C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools still failed earlier, but future runs should use the new instance.
+- CMake configure/build succeeded from preset windows-x86_64-msvc-vcpkg; final binaries are in out\build\windows-x86_64-msvc-vcpkg\src\Release and installed copy lives under out\install\windows-x86_64-msvc-vcpkg (GUI launch verified briefly).
 
 ## Next steps once prerequisites are fixed
 1. set "VCPKG_ROOT=%USERPROFILE%\vcpkg"
-2. call "C:\VSBuildTools\Common7\Tools\VsDevCmd.bat" -arch=x64
+2. call "%USERPROFILE%\run_vsdev_env.cmd" <cmake command> (or manually run VsDevCmd + cd into repo)
 3. cmake --preset windows-x86_64-msvc-vcpkg
 4. cmake --build out\build\windows-x86_64-msvc-vcpkg --config Release
 5. cmake --install out\build\windows-x86_64-msvc-vcpkg --config Release --prefix out\install\windows-x86_64-msvc-vcpkg
-6. Run out\build\windows-x86_64-msvc-vcpkg\Release\Tremotesf.exe
+6. Run out\install\windows-x86_64-msvc-vcpkg\tremotesf.exe (or use build tree exe)
