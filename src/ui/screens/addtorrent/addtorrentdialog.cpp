@@ -112,6 +112,7 @@ namespace tremotesf {
                     mFilesModel->renamedFiles(),
                     priorityFromComboBoxIndex(mAddTorrentParametersWidgets.priorityComboBox->currentIndex()),
                     mAddTorrentParametersWidgets.startTorrentCheckBox->isChecked(),
+                    mAddTorrentParametersWidgets.separateDirectoryCheckBox->isChecked(),
                     determineDeleteFileMode(mAddTorrentParametersWidgets),
                     mEditLabelsWidget->enabledLabels()
                 );
@@ -176,6 +177,12 @@ namespace tremotesf {
         startTorrentCheckBox->setChecked(parameters.startAfterAdding);
         layout->addRow(startTorrentCheckBox);
 
+        auto* const separateDirectoryCheckBox =
+            new QCheckBox(qApp->translate("tremotesf", "Each torrent in a separate directory"));
+        separateDirectoryCheckBox->setChecked(parameters.separateDirectory);
+        separateDirectoryCheckBox->setVisible(forTorrentFile);
+        layout->addRow(separateDirectoryCheckBox);
+
         QGroupBox* deleteTorrentFileGroupBox{};
         QCheckBox* moveTorrentFileToTrashCheckBox{};
         if (forTorrentFile) {
@@ -195,6 +202,7 @@ namespace tremotesf {
             .downloadDirectoryWidget = downloadDirectoryWidget,
             .priorityComboBox = priorityComboBox,
             .startTorrentCheckBox = startTorrentCheckBox,
+            .separateDirectoryCheckBox = separateDirectoryCheckBox,
             .deleteTorrentFileGroupBox = deleteTorrentFileGroupBox,
             .moveTorrentFileToTrashCheckBox = moveTorrentFileToTrashCheckBox
         };
@@ -299,6 +307,7 @@ namespace tremotesf {
             const auto parameters = getAddTorrentParameters(mRpc);
             mAddTorrentParametersWidgets.downloadDirectoryWidget->resetPath(parameters.downloadDirectory);
             mAddTorrentParametersWidgets.startTorrentCheckBox->setChecked(parameters.startAfterAdding);
+            mAddTorrentParametersWidgets.separateDirectoryCheckBox->setChecked(parameters.separateDirectory);
         }
 
         for (int i = 1, max = layout()->count(); i < max; ++i) {
@@ -471,6 +480,7 @@ namespace tremotesf {
 
         );
         startTorrentCheckBox->setChecked(initialParameters.startAfterAdding);
+        separateDirectoryCheckBox->setChecked(initialParameters.separateDirectory);
         if (deleteTorrentFileGroupBox) {
             deleteTorrentFileGroupBox->setChecked(initialParameters.deleteTorrentFile);
             moveTorrentFileToTrashCheckBox->setChecked(initialParameters.moveTorrentFileToTrash);
@@ -482,6 +492,7 @@ namespace tremotesf {
         auto* const settings = Settings::instance();
         settings->set_lastAddTorrentPriority(priorityFromComboBoxIndex(priorityComboBox->currentIndex()));
         settings->set_lastAddTorrentStartAfterAdding(startTorrentCheckBox->isChecked());
+        settings->set_lastAddTorrentSeparateDirectory(separateDirectoryCheckBox->isChecked());
         if (deleteTorrentFileGroupBox) {
             settings->set_lastAddTorrentDeleteTorrentFile(deleteTorrentFileGroupBox->isChecked());
             settings->set_lastAddTorrentMoveTorrentFileToTrash(moveTorrentFileToTrashCheckBox->isChecked());

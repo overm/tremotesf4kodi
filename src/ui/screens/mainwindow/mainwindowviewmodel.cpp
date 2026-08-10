@@ -260,6 +260,7 @@ namespace tremotesf {
                 {},
                 parameters.priority,
                 parameters.startAfterAdding,
+                parameters.separateDirectory,
                 parameters.deleteTorrentFile ? (parameters.moveTorrentFileToTrash ? Rpc::DeleteFileMode::MoveToTrash
                                                                                   : Rpc::DeleteFileMode::Delete)
                                              : Rpc::DeleteFileMode::No,

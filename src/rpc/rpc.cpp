@@ -26,6 +26,7 @@
 #include "serversettings.h"
 #include "serverstats.h"
 #include "torrent.h"
+#include "torrentfileparser.h"
 
 using namespace Qt::StringLiterals;
 
@@ -254,6 +255,7 @@ namespace tremotesf {
         std::map<QString, QString> renamedFiles,
         TorrentData::Priority bandwidthPriority,
         bool start,
+        bool separateDirectory,
         DeleteFileMode deleteFileMode,
         std::vector<QString> labels
     ) {
@@ -267,6 +269,7 @@ namespace tremotesf {
                 std::move(renamedFiles),
                 bandwidthPriority,
                 start,
+                separateDirectory,
                 deleteFileMode,
                 std::move(labels)
             ));
@@ -276,21 +279,46 @@ namespace tremotesf {
     namespace {
         std::optional<QByteArray> makeAddTorrentFileRequestData(
             const QString& filePath,
-            const QString& downloadDirectory,
+            QString downloadDirectory,
             const std::vector<int>& unwantedFiles,
             const std::vector<int>& highPriorityFiles,
             const std::vector<int>& lowPriorityFiles,
             TorrentData::Priority bandwidthPriority,
             bool start,
+            bool separateDirectory,
             const std::vector<QString>& labels
         ) {
             QString fileData{};
             try {
+                if (separateDirectory) {
+                    const auto torrentFile = parseTorrentFile(filePath);
+                    if (torrentFile.filesCount() == 1) {
+                        const auto& rootFileName = torrentFile.rootFileName;
+                        if (rootFileName.isEmpty()
+                            || rootFileName == "."_L1
+                            || rootFileName == ".."_L1
+                            || rootFileName.contains('/')
+                            || rootFileName.contains('\\')) {
+                            warning().log(
+                                "addTorrentFile: torrent root name is not a single path component: {}",
+                                rootFileName
+                            );
+                            return std::nullopt;
+                        }
+                        if (!downloadDirectory.endsWith('/') && !downloadDirectory.endsWith('\\')) {
+                            downloadDirectory += '/';
+                        }
+                        downloadDirectory += rootFileName;
+                    }
+                }
                 QFile file(filePath);
                 openFile(file, QIODevice::ReadOnly);
                 fileData = readFileAsBase64String(file);
             } catch (const QFileError& e) {
                 warning().logWithException(e, "addTorrentFile: failed to read torrent file");
+                return std::nullopt;
+            } catch (const bencode::Error& e) {
+                warning().logWithException(e, "addTorrentFile: failed to parse torrent file");
                 return std::nullopt;
             }
             QJsonObject arguments{
@@ -338,6 +366,7 @@ namespace tremotesf {
         std::map<QString, QString> renamedFiles,
         TorrentData::Priority bandwidthPriority,
         bool start,
+        bool separateDirectory,
         DeleteFileMode deleteFileMode,
         std::vector<QString> labels
     ) {
@@ -350,6 +379,7 @@ namespace tremotesf {
             std::move(lowPriorityFiles),
             bandwidthPriority,
             start,
+            separateDirectory,
             std::move(labels)
         );
         if (!requestData.has_value()) {

@@ -42,6 +42,10 @@ namespace tremotesf {
 
         inline bool isSingleFile() const { return std::holds_alternative<bencode::Integer>(mSingleFileSizeOrFiles); }
 
+        inline std::size_t filesCount() const {
+            return isSingleFile() ? 1 : std::get<bencode::List>(mSingleFileSizeOrFiles).size();
+        }
+
         inline bencode::Integer singleFileSize() const { return std::get<bencode::Integer>(mSingleFileSizeOrFiles); }
 
         inline std::ranges::view auto files() {

@@ -2,6 +2,12 @@
 <context>
     <name>tremotesf</name>
     <message>
+        <location filename="../src/ui/screens/addtorrent/addtorrentdialog.cpp" line="183"/>
+        <source>Each torrent in a separate directory</source>
+        <extracomment>Check box label</extracomment>
+        <translation>Каждый торрент в отдельной папке</translation>
+    </message>
+    <message>
         <location filename="../src/ui/screens/aboutdialog.cpp" line="25"/>
         <location filename="../src/ui/screens/aboutdialog.cpp" line="58"/>
         <source>About</source>

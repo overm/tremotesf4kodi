@@ -143,6 +143,7 @@ namespace tremotesf {
             std::map<QString, QString> renamedFiles,
             TorrentData::Priority bandwidthPriority,
             bool start,
+            bool separateDirectory,
             DeleteFileMode deleteFileMode,
             std::vector<QString> labels
         );
@@ -197,6 +198,7 @@ namespace tremotesf {
             std::map<QString, QString> renamedFiles,
             TorrentData::Priority bandwidthPriority,
             bool start,
+            bool separateDirectory,
             DeleteFileMode deleteFileMode,
             std::vector<QString> labels
         );
