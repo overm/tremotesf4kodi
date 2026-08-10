@@ -293,10 +293,22 @@ namespace tremotesf {
                 if (separateDirectory) {
                     const auto torrentFile = parseTorrentFile(filePath);
                     if (torrentFile.filesCount() == 1) {
+                        const auto& rootFileName = torrentFile.rootFileName;
+                        if (rootFileName.isEmpty()
+                            || rootFileName == "."_L1
+                            || rootFileName == ".."_L1
+                            || rootFileName.contains('/')
+                            || rootFileName.contains('\\')) {
+                            warning().log(
+                                "addTorrentFile: torrent root name is not a single path component: {}",
+                                rootFileName
+                            );
+                            return std::nullopt;
+                        }
                         if (!downloadDirectory.endsWith('/') && !downloadDirectory.endsWith('\\')) {
                             downloadDirectory += '/';
                         }
-                        downloadDirectory += torrentFile.rootFileName;
+                        downloadDirectory += rootFileName;
                     }
                 }
                 QFile file(filePath);
@@ -304,6 +316,9 @@ namespace tremotesf {
                 fileData = readFileAsBase64String(file);
             } catch (const QFileError& e) {
                 warning().logWithException(e, "addTorrentFile: failed to read torrent file");
+                return std::nullopt;
+            } catch (const bencode::Error& e) {
+                warning().logWithException(e, "addTorrentFile: failed to parse torrent file");
                 return std::nullopt;
             }
             QJsonObject arguments{
