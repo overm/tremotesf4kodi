@@ -127,6 +127,6 @@ fmt::format_context::iterator fmt::formatter<tremotesf::TorrentMetainfoFile>::fo
         torrentFile.infoHashV1,
         torrentFile.trackers,
         torrentFile.rootFileName,
-        torrentFile.isSingleFile() ? 1 : std::get<tremotesf::bencode::List>(torrentFile.mSingleFileSizeOrFiles).size()
+        torrentFile.filesCount()
     );
 }

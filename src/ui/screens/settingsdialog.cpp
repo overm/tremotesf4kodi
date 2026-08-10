@@ -308,6 +308,7 @@ namespace tremotesf {
                     const auto parameters = getAddTorrentParameters(rpc);
                     addTorrentParametersWidgets.downloadDirectoryWidget->resetPath(parameters.downloadDirectory);
                     addTorrentParametersWidgets.startTorrentCheckBox->setChecked(parameters.startAfterAdding);
+                    addTorrentParametersWidgets.separateDirectoryCheckBox->setChecked(parameters.separateDirectory);
                 }
             });
             QObject::connect(addTorrentParametersResetButton, &QPushButton::clicked, page, [=] {

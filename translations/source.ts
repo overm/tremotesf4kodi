@@ -146,6 +146,12 @@ Message that appears when disconnected from server</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/ui/screens/addtorrent/addtorrentdialog.cpp" line="183"/>
+        <source>Each torrent in a separate directory</source>
+        <extracomment>Check box label</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/screens/serversettings/serversettingsdialog.cpp" line="166"/>
         <source>Downloading</source>
         <comment>Noun</comment>

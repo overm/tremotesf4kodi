@@ -26,6 +26,7 @@
 #include "serversettings.h"
 #include "serverstats.h"
 #include "torrent.h"
+#include "torrentfileparser.h"
 
 using namespace Qt::StringLiterals;
 
@@ -254,6 +255,7 @@ namespace tremotesf {
         std::map<QString, QString> renamedFiles,
         TorrentData::Priority bandwidthPriority,
         bool start,
+        bool separateDirectory,
         DeleteFileMode deleteFileMode,
         std::vector<QString> labels
     ) {
@@ -267,6 +269,7 @@ namespace tremotesf {
                 std::move(renamedFiles),
                 bandwidthPriority,
                 start,
+                separateDirectory,
                 deleteFileMode,
                 std::move(labels)
             ));
@@ -276,16 +279,26 @@ namespace tremotesf {
     namespace {
         std::optional<QByteArray> makeAddTorrentFileRequestData(
             const QString& filePath,
-            const QString& downloadDirectory,
+            QString downloadDirectory,
             const std::vector<int>& unwantedFiles,
             const std::vector<int>& highPriorityFiles,
             const std::vector<int>& lowPriorityFiles,
             TorrentData::Priority bandwidthPriority,
             bool start,
+            bool separateDirectory,
             const std::vector<QString>& labels
         ) {
             QString fileData{};
             try {
+                if (separateDirectory) {
+                    const auto torrentFile = parseTorrentFile(filePath);
+                    if (torrentFile.filesCount() == 1) {
+                        if (!downloadDirectory.endsWith('/') && !downloadDirectory.endsWith('\\')) {
+                            downloadDirectory += '/';
+                        }
+                        downloadDirectory += torrentFile.rootFileName;
+                    }
+                }
                 QFile file(filePath);
                 openFile(file, QIODevice::ReadOnly);
                 fileData = readFileAsBase64String(file);
@@ -338,6 +351,7 @@ namespace tremotesf {
         std::map<QString, QString> renamedFiles,
         TorrentData::Priority bandwidthPriority,
         bool start,
+        bool separateDirectory,
         DeleteFileMode deleteFileMode,
         std::vector<QString> labels
     ) {
@@ -350,6 +364,7 @@ namespace tremotesf {
             std::move(lowPriorityFiles),
             bandwidthPriority,
             start,
+            separateDirectory,
             std::move(labels)
         );
         if (!requestData.has_value()) {

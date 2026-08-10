@@ -37,6 +37,7 @@ namespace tremotesf {
         SETTINGS_PROPERTY(bool, rememberAddTorrentParameters)
         SETTINGS_PROPERTY(TorrentData::Priority, lastAddTorrentPriority)
         SETTINGS_PROPERTY(bool, lastAddTorrentStartAfterAdding)
+        SETTINGS_PROPERTY(bool, lastAddTorrentSeparateDirectory)
         SETTINGS_PROPERTY(bool, lastAddTorrentDeleteTorrentFile)
         SETTINGS_PROPERTY(bool, lastAddTorrentMoveTorrentFileToTrash)
 

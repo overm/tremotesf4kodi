@@ -26,6 +26,7 @@ namespace tremotesf {
                 }(),
             .priority = settings->get_lastAddTorrentPriority(),
             .startAfterAdding = settings->get_lastAddTorrentStartAfterAdding(),
+            .separateDirectory = settings->get_lastAddTorrentSeparateDirectory(),
             .deleteTorrentFile = settings->get_lastAddTorrentDeleteTorrentFile(),
             .moveTorrentFileToTrash = settings->get_lastAddTorrentMoveTorrentFileToTrash()
         };
@@ -37,6 +38,7 @@ namespace tremotesf {
             .downloadDirectory = serverSettings->data().downloadDirectory,
             .priority = TorrentData::Priority::Normal,
             .startAfterAdding = serverSettings->data().startAddedTorrents,
+            .separateDirectory = false,
             .deleteTorrentFile = false,
             .moveTorrentFileToTrash = true
         };

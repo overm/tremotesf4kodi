@@ -87,6 +87,7 @@ namespace tremotesf {
         TorrentData::Priority, lastAddTorrentPriority, "lastAddTorrentPriority", TorrentData::Priority::Normal
     )
     SETTINGS_PROPERTY_DEF(bool, lastAddTorrentStartAfterAdding, "lastAddTorrentStartAfterAdding", true)
+    SETTINGS_PROPERTY_DEF(bool, lastAddTorrentSeparateDirectory, "lastAddTorrentSeparateDirectory", false)
     SETTINGS_PROPERTY_DEF(bool, lastAddTorrentDeleteTorrentFile, "lastAddTorrentDeleteTorrentFile", false)
     SETTINGS_PROPERTY_DEF(bool, lastAddTorrentMoveTorrentFileToTrash, "lastAddTorrentMoveTorrentFileToTrash", true)
 
