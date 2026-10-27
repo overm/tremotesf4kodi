@@ -440,6 +440,10 @@ endif ()
 if (BUILD_TESTING)
     find_package(Qt6 ${TREMOTESF_MINIMUM_QT_VERSION} REQUIRED COMPONENTS Test)
 
+    add_executable(rpc_addtorrent_test rpc/rpc_addtorrent_test.cpp)
+    add_test(NAME rpc_addtorrent_test COMMAND rpc_addtorrent_test)
+    target_link_libraries(rpc_addtorrent_test PRIVATE tremotesf_objects Qt::Test)
+
     add_executable(itemlistupdater_test itemlistupdater_test.cpp)
     add_test(NAME itemlistupdater_test COMMAND itemlistupdater_test)
     target_link_libraries(itemlistupdater_test PRIVATE tremotesf_objects Qt::Test)
